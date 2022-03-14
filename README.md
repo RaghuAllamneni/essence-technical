@@ -15,6 +15,9 @@ Fourth column label in moat weekly share file is updated wherever there is a mat
 The updated data is written into a csv file
 The output csv file is loaded into a Bigquery table via a gcs bucket
 
+### Assumptions:
+The solution is developed with an assumption that both the input csv files (Mapping_file.csv and Moat_weekly_share.csv) will be placed inside a gcs bucket
+
 ### Scope of improvements:
 The above solution is implemented with 9 Parameters, making it to flexible to be convereted as a generic framework (Still need to be make some chnages to make it as a generic framework, based on the use cases)
 The csv schemas and the join keys can be stored in a config file to make the code a generic framework
