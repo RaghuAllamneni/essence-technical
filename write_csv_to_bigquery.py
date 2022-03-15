@@ -8,7 +8,7 @@ from io import BytesIO
 from google.cloud import bigquery
 
 
-def load_weekly_moat_data_into_bigquery(gcp_auth_token, gcp_bucket_name, mapping_file_path, moat_file_path, op_moat_file_name, op_file_path, gcp_project, gcp_bq_data_set, gcp_bq_target_table):
+def load_weekly_moat_data_into_bigquery(gcp_auth_token, gcp_bucket_name, mapping_file_path, moat_file_path, op_moat_file_name, op_gcs_file_path, gcp_project, gcp_bq_data_set, gcp_bq_target_table):
     print('Initialising connection to the gcs bucket..... \n')
     storage_client = storage.Client.from_service_account_json(gcp_auth_token)
     bucket=storage_client.get_bucket(gcp_bucket_name)
@@ -37,7 +37,7 @@ def load_weekly_moat_data_into_bigquery(gcp_auth_token, gcp_bucket_name, mapping
     joinDf.to_csv(op_moat_file_name, mode='w', columns=colsToRetain, index = False)
 
     print('Pushing the updated moat file to the GCS bucket..... \n')
-    blob=bucket.blob(op_file_path)
+    blob=bucket.blob(op_gcs_file_path)
     blob.upload_from_filename(op_moat_file_name)
 
     # Construct a BigQuery client object.
@@ -82,7 +82,7 @@ def load_weekly_moat_data_into_bigquery(gcp_auth_token, gcp_bucket_name, mapping
         # The source format defaults to CSV, so the line below is optional.
         source_format=bigquery.SourceFormat.CSV,
         )
-    uri = 'gs://'+gcp_bucket_name+'/'+op_file_path
+    uri = 'gs://'+gcp_bucket_name+'/'+op_gcs_file_path
 
     table_id=gcp_project+'.'+gcp_bq_data_set+'.'+gcp_bq_target_table
 
